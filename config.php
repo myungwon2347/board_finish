@@ -10,7 +10,7 @@
 		'HOST' => 'localhost',
 		'ID' => 'root',
 		'PW' => '6a48ppsc.,',
-		'NAME' => 'fitjarip'
+		'NAME' => 'test'
 	);
 	// 접두사 정보
 	$GLOBALS['PREFIX'] = array(	

@@ -86,8 +86,6 @@ class Board
 			SELECT SQL_CALC_FOUND_ROWS
 				mt.*
 				,	me.nickname AS reg_user_nickname
-				, 	IFNULL(col.count, 0) AS like_count
-				, 	IFNULL(cbo.count, 0) AS reply_count
 				,	IFNULL(fi1.count, 0) AS is_image
 			FROM
 				(
@@ -116,38 +114,6 @@ class Board
 				)
 			AS me
 			ON me.idx = mt.reg_user_idx
-			
-			LEFT OUTER JOIN
-				(
-					SELECT
-						*
-						, COUNT(*) AS count
-					FROM
-						`reply`
-					WHERE
-						ref_table = '{$service_name}'
-						AND reply_user_idx IS NOT NULL
-					GROUP BY
-						ref_idx
-				)
-			AS cbo
-			ON cbo.ref_idx = mt.idx
-
-			LEFT OUTER JOIN
-				(
-					SELECT
-						*
-						, COUNT(*) AS count
-					FROM
-						`like`
-					WHERE
-						ref_table = '{$service_name}'
-						AND like_user_idx IS NOT NULL
-					GROUP BY
-						ref_idx
-				)
-			AS col
-			ON col.ref_idx = mt.idx
 			
 			LEFT OUTER JOIN
                 (
@@ -197,9 +163,7 @@ class Board
 		$result = DB::Execute("
 			SELECT
 				mt.*
-				,	lik.idx AS like_status
 				,	fi2.path AS thumbnail
-				, 	IFNULL(col.count, 0) AS like_count
 				,	IFNULL(me.nickname, '-') AS reg_user_name
 			FROM
 				(
@@ -225,38 +189,6 @@ class Board
 				)
 			AS me
 			ON me.idx = mt.reg_user_idx
-
-			LEFT OUTER JOIN
-				(
-					SELECT
-						*
-						, COUNT(*) AS count
-					FROM
-						`like`
-					WHERE
-						ref_table = '{$service_name}'
-						AND like_user_idx IS NOT NULL
-					GROUP BY
-						ref_idx
-				)
-			AS col
-			ON col.ref_idx = mt.idx
-			
-			LEFT OUTER JOIN
-				(
-					SELECT
-						idx
-						,	ref_idx
-					FROM
-						`like`
-					WHERE
-						ref_table = '{$service_name}'
-						{$like_user_idx}
-					GROUP BY
-						ref_idx
-				)
-			AS lik
-			ON lik.ref_idx = mt.idx
 			
 			LEFT OUTER JOIN
                 (
@@ -311,8 +243,6 @@ class Board
 			SELECT SQL_CALC_FOUND_ROWS
 				mt.*
 				,	me.nickname AS reg_user_nickname
-				, 	IFNULL(cbo.count, 0) AS reply_count
-				, 	IFNULL(col.count, 0) AS like_count
 				,	IFNULL(fi1.count, 0) AS is_image
 				,	fi2.path AS thumbnail
 			FROM
@@ -341,38 +271,6 @@ class Board
 				)
 			AS me
 			ON me.idx = mt.reg_user_idx
-			
-			LEFT OUTER JOIN
-				(
-					SELECT
-						*
-						, COUNT(*) AS count
-					FROM
-						`reply`
-					WHERE
-						ref_table = '{$service_name}'
-						AND reply_user_idx IS NOT NULL
-					GROUP BY
-						ref_idx
-				)
-			AS cbo
-			ON cbo.ref_idx = mt.idx
-
-			LEFT OUTER JOIN
-				(
-					SELECT
-						*
-						, COUNT(*) AS count
-					FROM
-						`like`
-					WHERE
-						ref_table = '{$service_name}'
-						AND like_user_idx IS NOT NULL
-					GROUP BY
-						ref_idx
-				)
-			AS col
-			ON col.ref_idx = mt.idx
 			
 			LEFT OUTER JOIN
                 (
