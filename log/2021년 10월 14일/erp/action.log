@@ -1,0 +1,302 @@
+[2021-10-14 02:30:24] ["/api/admin/board.php"] [uploadBoard] [::1] [관리자(1074)]
+
+UPDATE `board` SET
+	`type` = 'common'
+	,	`title` = 'test ss'
+	,	`content` = 'test sssssss111122'
+	,	`notice_status` = 0
+	,	`view_status` = 1
+	,	update_date = NOW()
+WHERE
+	idx = 181
+	
+
+[2021-10-14 02:45:58] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 181
+				
+				
+		
+
+[2021-10-14 02:46:01] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 181
+				
+				
+		
+
+[2021-10-14 02:46:08] ["/api/admin/board.php"] [uploadBoard] [::1] [관리자(1074)]
+
+UPDATE `board` SET
+	`type` = 'common'
+	,	`title` = 'test ss'
+	,	`content` = 'test sssssss111122'
+	,	`notice_status` = 0
+	,	`view_status` = 1
+	,	update_date = NOW()
+WHERE
+	idx = 181
+	
+
+[2021-10-14 02:46:15] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 181
+				
+				
+		
+
+[2021-10-14 02:46:15] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 181
+				
+				
+		
+
+[2021-10-14 02:46:16] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 181
+				
+				
+		
+
+[2021-10-14 02:46:16] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 181
+				
+				
+		
+
+[2021-10-14 02:46:16] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 181
+				
+				
+		
+
+[2021-10-14 02:46:17] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 181
+				
+				
+		
+
+[2021-10-14 02:46:17] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 181
+				
+				
+		
+
+[2021-10-14 02:54:10] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 181
+				
+				
+		
+
+[2021-10-14 02:54:11] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 181
+				
+				
+		
+
+[2021-10-14 02:54:14] ["/api/admin/board.php"] [uploadBoard] [::1] [관리자(1074)]
+
+UPDATE `board` SET
+	`type` = 'common'
+	,	`title` = 'test ss'
+	,	`content` = 'test sssssss11112233'
+	,	`notice_status` = 0
+	,	`view_status` = 1
+	,	update_date = NOW()
+WHERE
+	idx = 181
+	
+
+[2021-10-14 02:54:15] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 181
+				
+				
+		
+
+[2021-10-14 02:54:23] ["/api/admin/board.php"] [uploadBoard] [::1] [관리자(1074)]
+
+UPDATE `board` SET
+	`type` = 'common'
+	,	`title` = 'test ss'
+	,	`content` = 'test sssssss1111223377777'
+	,	`notice_status` = 0
+	,	`view_status` = 1
+	,	update_date = NOW()
+WHERE
+	idx = 181
+	
+
+[2021-10-14 02:54:24] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 181
+				
+				
+		
+
+[2021-10-14 02:54:51] ["/api/admin/board.php"] [uploadBoard] [::1] [관리자(1074)]
+
+UPDATE `board` SET
+	`type` = 'common'
+	,	`title` = 'test ss'
+	,	`content` = 'test sssssss11112233777771111'
+	,	`notice_status` = 0
+	,	`view_status` = 1
+	,	update_date = NOW()
+WHERE
+	idx = 181
+	
+
+[2021-10-14 02:54:52] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 181
+				
+				
+		
+
+[2021-10-14 02:54:58] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 181
+				
+				
+		
+
+[2021-10-14 02:55:07] ["/api/admin/board.php"] [uploadBoard] [::1] [관리자(1074)]
+
+UPDATE `board` SET
+	`type` = 'common'
+	,	`title` = 'test ss'
+	,	`content` = 'test sssssss11112233777771111777'
+	,	`notice_status` = 0
+	,	`view_status` = 1
+	,	update_date = NOW()
+WHERE
+	idx = 181
+	
+
+[2021-10-14 02:55:08] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 181
+				
+				
+		
+
+[2021-10-14 02:55:36] ["/api/admin/board.php"] [uploadBoard] [::1] [관리자(1074)]
+
+INSERT INTO `board`
+(
+	`type`
+	,	`title`
+	,	`content`
+	,	`notice_status`
+	,	`view_status`
+	,	`reg_user_idx`
+) 
+VALUES
+(
+	'common'
+	,	'test111'
+	,	'test111'
+	,	0
+	,	1
+	,	'1074'
+)
+
+[2021-10-14 02:55:41] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 182
+				
+				
+		
+
+[2021-10-14 02:57:06] ["/api/admin/board.php"] [uploadBoard] [::1] [관리자(1074)]
+
+UPDATE `board` SET
+	`type` = 'common'
+	,	`title` = 'test111'
+	,	`content` = 'test11133'
+	,	`notice_status` = 0
+	,	`view_status` = 1
+	,	update_date = NOW()
+WHERE
+	idx = 182
+	
+
+[2021-10-14 02:57:08] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 182
+				
+				
+		
+
+[2021-10-14 02:57:09] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			UPDATE `board` SET
+				hit = hit + 1 
+			WHERE
+				idx = 182
+				
+				
+		
+

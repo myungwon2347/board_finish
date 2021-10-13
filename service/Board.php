@@ -157,7 +157,6 @@ class Board
 	{// 사용자 - 상세 조회 (2021.09.01 / By.Chungwon)
 		$service_name = self::$service_name;
 
-		$like_user_idx 				= empty($request['like_user_idx']) 				? "" : "AND `like_user_idx` = '{$request['like_user_idx']}'";
 		$view_status 		= empty($request['view_status']) 		? "" : "AND `view_status` IN ({$request['view_status']})";
 
 		$result = DB::Execute("

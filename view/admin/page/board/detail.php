@@ -522,7 +522,9 @@
             /********** 데이터 파싱 **********/
             // item['view_status'] = item['view_status'] === "0" ? "숨김" : "노출";
 
-
+            // 값 바인딩
+            g_res[api_name] = item;
+            
             if(item['type'] === "common") { item['type_str'] = "자유게시판"; }
             else if(item['type'] === "notice") { item['type_str'] = "공지사항"; }
             else if(item['type'] === "profile") { item['type_str'] = "프로필"; }

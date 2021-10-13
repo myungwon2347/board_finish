@@ -1,0 +1,3828 @@
+[2021-10-14 02:30:21] ["/view/admin/page/board/upload.php"] [No Action] [::1] [관리자(1074)]
+
+			SELECT
+				*
+			FROM
+				etc
+			WHERE
+				1 = 1
+				
+				
+				AND status = 1
+		
+
+[2021-10-14 02:30:21] ["/view/admin/page/board/upload.php"] [No Action] [::1] [관리자(1074)]
+
+			SELECT DISTINCT
+				`type`
+			FROM
+				etc
+			WHERE
+				`type` IS NOT NULL
+				
+		
+
+[2021-10-14 02:30:21] ["/view/admin/page/board/upload.php"] [No Action] [::1] [관리자(1074)]
+
+            SELECT SQL_CALC_FOUND_ROWS
+                *
+            FROM
+                (
+                    SELECT
+                        *
+                    FROM
+                        `manage_page`
+                    WHERE
+                        parent_idx IS NULL
+                        AND view_status IN (1)
+                )
+            AS cmp
+            
+            
+            
+            ORDER BY order_num
+
+		
+
+[2021-10-14 02:30:21] ["/view/admin/page/board/upload.php"] [No Action] [::1] [관리자(1074)]
+
+            SELECT SQL_CALC_FOUND_ROWS
+                *
+            FROM
+                (
+                    SELECT
+                        *
+                    FROM
+                        `manage_page`
+                    WHERE
+                        parent_idx IS NULL
+                        AND view_status IN (1)
+                )
+            AS cmp
+            
+            	INNER JOIN
+                (
+                    SELECT
+                        *
+						,	parent_idx AS parent_idx2
+                    FROM
+                        `manage_page`
+                    WHERE
+                        parent_idx = 3
+                        AND view_status IN (1)
+                )
+            AS cmp2
+            ON cmp2.parent_idx = cmp.idx
+        
+            
+            ORDER BY cmp.order_num, cmp2.order_num
+
+		
+
+[2021-10-14 02:30:22] ["/api/admin/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+				)
+			AS mt
+		
+
+[2021-10-14 02:30:22] ["/api/admin/board.php"] [getFileListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				idx
+				,	type
+				,	ref_table
+				,	ref_key
+				,	size
+				,	ref_idx
+				,	o_name
+				,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+				,	IFNULL(order_num, 0) AS order_num
+				,	IFNULL(value, '') AS value
+				,	hit
+			FROM
+				`files`
+			WHERE
+				1 = 1
+				
+				AND ref_table = LOWER('board')
+				
+				AND ref_idx = 181
+
+				
+
+			ORDER BY ISNULL(order_num) ASC,	order_num ASC
+
+			LIMIT 100
+			OFFSET 0
+
+		
+
+[2021-10-14 02:30:24] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:45:58] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:45:58] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:46:01] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:46:02] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:46:04] ["/api/admin/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+				)
+			AS mt
+		
+
+[2021-10-14 02:46:04] ["/api/admin/board.php"] [getFileListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				idx
+				,	type
+				,	ref_table
+				,	ref_key
+				,	size
+				,	ref_idx
+				,	o_name
+				,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+				,	IFNULL(order_num, 0) AS order_num
+				,	IFNULL(value, '') AS value
+				,	hit
+			FROM
+				`files`
+			WHERE
+				1 = 1
+				
+				AND ref_table = LOWER('board')
+				
+				AND ref_idx = 181
+
+				
+
+			ORDER BY ISNULL(order_num) ASC,	order_num ASC
+
+			LIMIT 100
+			OFFSET 0
+
+		
+
+[2021-10-14 02:46:08] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:46:12] ["/api/admin/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+				)
+			AS mt
+		
+
+[2021-10-14 02:46:12] ["/api/admin/board.php"] [getFileListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				idx
+				,	type
+				,	ref_table
+				,	ref_key
+				,	size
+				,	ref_idx
+				,	o_name
+				,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+				,	IFNULL(order_num, 0) AS order_num
+				,	IFNULL(value, '') AS value
+				,	hit
+			FROM
+				`files`
+			WHERE
+				1 = 1
+				
+				AND ref_table = LOWER('board')
+				
+				AND ref_idx = 181
+
+				
+
+			ORDER BY ISNULL(order_num) ASC,	order_num ASC
+
+			LIMIT 100
+			OFFSET 0
+
+		
+
+[2021-10-14 02:46:15] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:46:16] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:46:16] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:46:16] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:46:16] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:46:17] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:46:17] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:49:03] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:49:05] ["/api/admin/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+				)
+			AS mt
+		
+
+[2021-10-14 02:49:05] ["/api/admin/board.php"] [getFileListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				idx
+				,	type
+				,	ref_table
+				,	ref_key
+				,	size
+				,	ref_idx
+				,	o_name
+				,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+				,	IFNULL(order_num, 0) AS order_num
+				,	IFNULL(value, '') AS value
+				,	hit
+			FROM
+				`files`
+			WHERE
+				1 = 1
+				
+				AND ref_table = LOWER('board')
+				
+				AND ref_idx = 181
+
+				
+
+			ORDER BY ISNULL(order_num) ASC,	order_num ASC
+
+			LIMIT 100
+			OFFSET 0
+
+		
+
+[2021-10-14 02:54:10] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:54:11] ["/api/admin/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+				)
+			AS mt
+		
+
+[2021-10-14 02:54:11] ["/api/admin/board.php"] [getFileListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				idx
+				,	type
+				,	ref_table
+				,	ref_key
+				,	size
+				,	ref_idx
+				,	o_name
+				,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+				,	IFNULL(order_num, 0) AS order_num
+				,	IFNULL(value, '') AS value
+				,	hit
+			FROM
+				`files`
+			WHERE
+				1 = 1
+				
+				AND ref_table = LOWER('board')
+				
+				AND ref_idx = 181
+
+				
+
+			ORDER BY ISNULL(order_num) ASC,	order_num ASC
+
+			LIMIT 100
+			OFFSET 0
+
+		
+
+[2021-10-14 02:54:11] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:54:14] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:54:15] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:54:21] ["/api/admin/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+				)
+			AS mt
+		
+
+[2021-10-14 02:54:21] ["/api/admin/board.php"] [getFileListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				idx
+				,	type
+				,	ref_table
+				,	ref_key
+				,	size
+				,	ref_idx
+				,	o_name
+				,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+				,	IFNULL(order_num, 0) AS order_num
+				,	IFNULL(value, '') AS value
+				,	hit
+			FROM
+				`files`
+			WHERE
+				1 = 1
+				
+				AND ref_table = LOWER('board')
+				
+				AND ref_idx = 181
+
+				
+
+			ORDER BY ISNULL(order_num) ASC,	order_num ASC
+
+			LIMIT 100
+			OFFSET 0
+
+		
+
+[2021-10-14 02:54:23] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:54:24] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:54:47] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:54:49] ["/api/admin/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+				)
+			AS mt
+		
+
+[2021-10-14 02:54:49] ["/api/admin/board.php"] [getFileListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				idx
+				,	type
+				,	ref_table
+				,	ref_key
+				,	size
+				,	ref_idx
+				,	o_name
+				,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+				,	IFNULL(order_num, 0) AS order_num
+				,	IFNULL(value, '') AS value
+				,	hit
+			FROM
+				`files`
+			WHERE
+				1 = 1
+				
+				AND ref_table = LOWER('board')
+				
+				AND ref_idx = 181
+
+				
+
+			ORDER BY ISNULL(order_num) ASC,	order_num ASC
+
+			LIMIT 100
+			OFFSET 0
+
+		
+
+[2021-10-14 02:54:52] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:54:52] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:54:58] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:54:58] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:55:05] ["/api/admin/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+				)
+			AS mt
+		
+
+[2021-10-14 02:55:05] ["/api/admin/board.php"] [getFileListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				idx
+				,	type
+				,	ref_table
+				,	ref_key
+				,	size
+				,	ref_idx
+				,	o_name
+				,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+				,	IFNULL(order_num, 0) AS order_num
+				,	IFNULL(value, '') AS value
+				,	hit
+			FROM
+				`files`
+			WHERE
+				1 = 1
+				
+				AND ref_table = LOWER('board')
+				
+				AND ref_idx = 181
+
+				
+
+			ORDER BY ISNULL(order_num) ASC,	order_num ASC
+
+			LIMIT 100
+			OFFSET 0
+
+		
+
+[2021-10-14 02:55:07] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:55:08] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 181
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:55:36] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:55:37] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:55:37] ["/api/admin/board.php"] [getFileListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				idx
+				,	type
+				,	ref_table
+				,	ref_key
+				,	size
+				,	ref_idx
+				,	o_name
+				,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+				,	IFNULL(order_num, 0) AS order_num
+				,	IFNULL(value, '') AS value
+				,	hit
+			FROM
+				`files`
+			WHERE
+				1 = 1
+				
+				AND ref_table = LOWER('board')
+				
+				AND ref_idx = 182
+
+				
+
+			ORDER BY ISNULL(order_num) ASC,	order_num ASC
+
+			LIMIT 100
+			OFFSET 0
+
+		
+
+[2021-10-14 02:55:37] ["/api/admin/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 182
+				)
+			AS mt
+		
+
+[2021-10-14 02:55:40] ["/api/board.php"] [getListBoardNotice] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 1
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:55:40] ["/api/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 0
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 15
+			OFFSET 0
+		
+
+[2021-10-14 02:55:40] ["/api/board.php"] [getListBoardNotice] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 1
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:55:40] ["/api/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 0
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 15
+			OFFSET 0
+		
+
+[2021-10-14 02:55:41] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 182
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:55:43] ["/api/board.php"] [getListBoardNotice] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 1
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:55:43] ["/api/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 0
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 15
+			OFFSET 0
+		
+
+[2021-10-14 02:56:32] ["/api/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 0
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				AND
+			(
+				(`title` LIKE '%테스트%' OR replace(`title`, ' ', '') LIKE '%테스트%')
+				OR (`nickname` LIKE '%테스트%' OR replace(`nickname`, ' ', '') LIKE '%테스트%')
+			)
+		
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 15
+			OFFSET 0
+		
+
+[2021-10-14 02:56:36] ["/api/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 0
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:56:37] ["/api/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 0
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 20
+			OFFSET 20
+		
+
+[2021-10-14 02:56:38] ["/api/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 0
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:56:59] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:57:00] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:57:02] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:57:02] ["/api/board.php"] [getListBoardNotice] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 1
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:57:02] ["/api/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 0
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 15
+			OFFSET 0
+		
+
+[2021-10-14 02:57:04] ["/api/admin/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 182
+				)
+			AS mt
+		
+
+[2021-10-14 02:57:04] ["/api/admin/board.php"] [getFileListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				idx
+				,	type
+				,	ref_table
+				,	ref_key
+				,	size
+				,	ref_idx
+				,	o_name
+				,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+				,	IFNULL(order_num, 0) AS order_num
+				,	IFNULL(value, '') AS value
+				,	hit
+			FROM
+				`files`
+			WHERE
+				1 = 1
+				
+				AND ref_table = LOWER('board')
+				
+				AND ref_idx = 182
+
+				
+
+			ORDER BY ISNULL(order_num) ASC,	order_num ASC
+
+			LIMIT 100
+			OFFSET 0
+
+		
+
+[2021-10-14 02:57:06] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:57:07] ["/api/board.php"] [getListBoardNotice] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 1
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:57:07] ["/api/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 0
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 15
+			OFFSET 0
+		
+
+[2021-10-14 02:57:08] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 182
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:57:09] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+
+			SELECT
+				mt.*
+				,	fi2.path AS thumbnail
+				,	IFNULL(me.nickname, '-') AS reg_user_name
+			FROM
+				(
+
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						idx = 182
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			LEFT OUTER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+		
+
+[2021-10-14 02:57:09] ["/api/board.php"] [getListBoardNotice] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 1
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:57:09] ["/api/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 0
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 15
+			OFFSET 0
+		
+
+[2021-10-14 02:57:50] ["/api/board.php"] [getListBoardNotice] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 1
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+
+[2021-10-14 02:57:50] ["/api/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+				,	fi2.path AS thumbnail
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						`board`
+					WHERE
+						1 = 1
+						AND `type` = 'common'
+						AND `notice_status` = 0
+						AND `view_status` IN (1)
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        *
+                        ,	CONCAT('/', type, '/', ref_table, '/', ref_key, '/', n_name) AS path
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+						AND ref_key = 'thumbnail'
+					GROUP BY
+						ref_idx
+                )
+            AS fi2
+			ON fi2.ref_idx = mt.idx
+
+			WHERE
+				1 = 1
+				
+						
+			ORDER BY notice_status desc, order_num desc, idx desc
+
+			LIMIT 15
+			OFFSET 0
+		
+
+[2021-10-14 02:57:51] ["/api/admin/board.php"] [getListBoard] [::1] [관리자(1074)]
+
+			SELECT SQL_CALC_FOUND_ROWS
+				mt.*
+				,	me.nickname AS reg_user_nickname
+				,	IFNULL(fi1.count, 0) AS is_image
+			FROM
+				(
+					SELECT
+						*
+					FROM
+						board
+					WHERE
+						1 = 1
+						
+						
+						
+				)
+			AS mt
+
+			INNER JOIN
+				(
+					SELECT
+						*
+					FROM
+						`member`
+					WHERE
+						1 = 1
+						
+						
+				)
+			AS me
+			ON me.idx = mt.reg_user_idx
+			
+			LEFT OUTER JOIN
+                (
+                    SELECT
+                        ref_idx
+						,	COUNT(*) AS count
+                    FROM
+						`files`
+                    WHERE
+						ref_table = 'board'
+					GROUP BY
+						ref_idx
+                )
+            AS fi1
+			ON fi1.ref_idx = mt.idx
+						
+			ORDER BY idx desc
+
+			LIMIT 20
+			OFFSET 0
+		
+

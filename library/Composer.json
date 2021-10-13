@@ -1,0 +1,11 @@
+{
+	"name": "acme/monolog",
+    "require": {
+        "monolog/monolog": "1.23.*",
+		"firebase/php-jwt": "5.0",
+		"facebook/graph-sdk": "5.6.2",
+		"coolsms/php-sdk": "^2.0",
+		"vimeo/vimeo-api": "^3.0",
+		"cache/apc-adapter": "^1.0"
+    }
+}

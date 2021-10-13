@@ -105,12 +105,6 @@
         "get<?=$target_flag?>" : {// 게시물 상세 조회
             <?=$target_idx_name?> :   <?=$target_idx?>,
         },
-        "getListReply" : {// 댓글 목록 조회
-            sort_list                   :   "<?=isset($params["getListReply"]["sort_list"])         ? $params["getListReply"]["sort_list"] : "idx asc"?>",   // 정렬
-
-            ref_table          :   "<?=$target_table?>",
-            ref_idx            :   <?=$target_idx?>,
-        },
         // "getFileList<?=$target_flag?>" : {// 파일 목록 조회
         //     target_idx                  :   <?=$target_idx?>,
         //     ref_table                   :   "<?=$target_table?>",
@@ -127,7 +121,6 @@
         FITSOFT['REST_API']['getInit']({
             func_list : [ 
                 "get<?=$target_flag?>", // 게시물 상세 조회
-                "getListReply",         // 댓글 목록 조회
                 // "getFileList<?=$target_flag?>", // 파일 목록 조회
             ],
             complete : function(api_name)
@@ -179,10 +172,32 @@
         var item_info = item.data();
         var item_siblings = item.parent().find("[data-method=" + api_info['method'] + "]"); // 동일 선상의 형제 값
 
+    
+        if(false){}
+
+            else if(api_info['method'] === "move")
+            {// 페이지 이동 (2021.07.06 / By.Chungwon)
+                var target_idx = item_info['idx'];
+                var move_type = api_info['move_type'];
+
+                if(move_type !== "delete")
+                {// 등록/수정 또는 상세 화면 이동
+
+                    // 현재 URL
+                    var current_url = document.location.pathname;
+
+                    // list 페이지를 변경되는 페이지로 변경
+                    var change_url = current_url.replace("detail.php", move_type + ".php");
+                    // var change_url = replaceReverse(current_url, "list.php", move_type + ".php");
+
+                    // 페이지로 이동
+                    location.href = StringFormat("{0}?<?=$target_idx_name?>={1}", change_url, target_idx);
+                }
+
+            }
     }
-    /**************************************************** 정적 바인딩 이벤트 끝 *********************************************/
 
-
+/**************************************************** 정적 바인딩 이벤트 끝 *********************************************/
 
 
 
@@ -470,6 +485,156 @@
 
 
     /**************************************************** 셋팅 끝 ******************************************/
+function create(api_name, data)
+    {// HTML 생성 - 수신값은 전부 문자열
+        if(false){}
+        
+        if(api_name === "getListReply1")
+        {// 게시물 댓글 목록 조회
+            data['table'] = 'reply';
 
+            // 클릭 상태 확인
+            var is_like = empty(data['like_status']) ? "" : "active";
+            var is_mine = data['reply_user_idx'] == <?=isset($_SESSION['login_user']) ? $_SESSION['login_user']['idx'] : 0?> ? "" : "mine-off";
+
+            return StringFormat("\
+                <div class='comment-item item-data {6} {7}' {0}>\
+                    <div class='comment-upload1'>\
+                        <div class='comment-wrap comment-insert'>\
+                            <div class='comment-top'>\
+                                <div class='comment-l'>\
+                                    <span class='comment-writer'>{1}<span class='mine-off-el'>(나)</span></span>\
+                                    <span class='comment-date'>{3}</span>\
+                                </div>\
+                                <div class='comment-r mine-off-el'>\
+                                    <div class='comment-mode comment-readmode active comm-btn2'>\
+                                        <button class='comment-modify' data-method='view_modify_form' data-deep='1' data-method_event='click'>수정</button>\
+                                    </div>\
+                                    <div class='comment-mode comment-readmode active comm-btn2'>\
+                                        <button class='comment-delete' data-method='delete_reply' data-method_event='click'>삭제</button>\
+                                    </div>\
+                                </div>\
+                            </div>\
+                            <div class='comment-mid'>\
+                                <p class='comment-con'>\
+                                    {2}\
+                                </p>\
+                                <textarea class='fit-hide comment-con-textarea'>{8}</textarea>\
+                            </div>\
+                            <div class='comment-bot comm-btn2'>\
+                                <button class='comment-re' data-method='view_reply_form' data-method_event='click'>답글</button>\
+                            </div>\
+                        </div>\
+                        <div class='comment-wrap comment-update off'>\
+                            <div class='bot-wrap-comment-modify'>\
+                                <div class='comment-write'>\
+                                    <div>\
+                                        <textarea class='cw-txt' placeholder='댓글을 작성해주세요 / 로그인이 필요합니다.'></textarea>\
+                                        <div class='cw-btn-wrap'>\
+                                            <button class='cw-cancel comm-btn2' data-method='view_modify_form' data-deep='1' data-method_event='click'>취소</button>\
+                                            <button class='cw-submit' data-method='update_reply' data-method_event='click'>수정</button>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class='comment-cont item-data'>\
+                                </div>\
+                            </div>\
+                        </div>\
+                    <div>\
+                    <div>\
+                        <div class='bot-wrap-comment off'>\
+                            <div class='comment-write'>\
+                                <div>\
+                                    <textarea class='cw-txt' placeholder='댓글을 작성해주세요 / 로그인이 필요합니다.'></textarea>\
+                                    <div class='cw-btn-wrap'>\
+                                        <button class='cw-cancel comm-btn2' data-method='view_reply_form' data-method_event='click'>취소</button>\
+                                        <button class='cw-submit' data-method='insert_reply' data-method_event='click'>등록</button>\
+                                    </div>\
+                                </div>\
+                            </div>\
+                            <div class='comment-cont'>\
+                            </div>\
+                        </div>\
+                        <div class='cont-reply2' id='list-getListReply2_{5}'></div>\
+                    </div>\
+                </div>\
+            "
+                ,   getlistToDataStr(['idx', 'parent_idx'], data)
+                ,   data['reply_user_name']
+                ,   setTextarea(data['content'])
+                ,   data['insert_date']
+                ,   data['like_count']  
+                ,   data['idx']
+                ,   is_like
+                ,   is_mine
+                ,   data['content']
+            );
+        }
+        
+        else if(api_name === "getListReply2")
+        {// 게시물 대댓글 목록 조회
+            data['table'] = 'reply2';
+
+            // 클릭 상태 확인
+            var is_like = empty(data['like_status']) ? "" : "active";
+            var is_mine = data['reply_user_idx'] == <?=isset($_SESSION['login_user']) ? $_SESSION['login_user']['idx'] : 0 ?> ? "" : "mine-off";
+
+            return StringFormat("\
+                <div class='comment-item comment-re item-data {5} {6}' {0}>\
+                    <div class='comment-upload2'>\
+                        <div class='comment-wrap comment-insert'>\
+                            <div class='comment-top'>\
+                                <div class='comment-l'>\
+                                    <span class='comment-writer'>{1}<span class='mine-off-el'>(나)</span></span>\
+                                    <span class='comment-date'>{3}</span>\
+                                </div>\
+                                <div class='comment-r mine-off-el'>\
+                                    <div class='comment-mode comment-readmode active comm-btn2'>\
+                                        <button class='comment-modify' data-method='view_modify_form' data-deep='2' data-method_event='click'>수정</button>\
+                                    </div>\
+                                    <div class='comment-mode comment-readmode active comm-btn2'>\
+                                        <button class='comment-delete' data-method='delete_reply' data-method_event='click'>삭제</button>\
+                                    </div>\
+                                </div>\
+                            </div>\
+                            <div class='comment-mid'>\
+                                <p class='comment-con'>\
+                                    {2}\
+                                </p>\
+                                <textarea class='fit-hide comment-con-textarea'>{7}</textarea>\
+                            </div>\
+                        </div>\
+                        <div class='comment-wrap comment-update off'>\
+                            <div class='bot-wrap-comment-modify'>\
+                                <div class='comment-write'>\
+                                    <div>\
+                                        <textarea class='cw-txt' placeholder='댓글을 작성해주세요 / 로그인이 필요합니다.'></textarea>\
+                                        <div class='cw-btn-wrap'>\
+                                            <button class='cw-cancel comm-btn2' data-method='view_modify_form' data-deep='2' data-method_event='click'>취소</button>\
+                                            <button class='cw-submit' data-method='update_reply' data-method_event='click'>수정</button>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                                <div class='comment-cont'>\
+                                </div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                </div>\
+            "
+                ,   getlistToDataStr(['idx', 'parent_idx'], data)
+                ,   data['reply_user_name']
+                ,   setTextarea(data['content'])
+                ,   data['insert_date']
+                ,   data['like_count']  
+                ,   is_like
+                ,   is_mine
+                ,   data['content']
+            );    
+        }
+
+        
+    }
+    /**************************************************** HTML 생성 끝 *********************************************/    
 </script>
 <!-- SCRIPT END -->

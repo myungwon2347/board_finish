@@ -1,85 +1,318 @@
 <?php
-    /*
-        사용자 - 실적스토어(자유게시판) > 목록페이지 
-        2021.10.11 / By.smw
-    */
-
-    /************************************************* 페이지 정보 세팅 *************************************************/
+    namespace service;
+   
     require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php'; 
 
-    $params = isset($_REQUEST['params']) ? json_decode($_REQUEST['params'], true) : null;
-
-    $page_type = "list";              // 페이지 타입 (upload, detail, list)
-    $api_url = "/board";      // 요청 API 주소
-    
-	$target_flag = "Board"; 			// 편의상 API의 ID 키
-	$target_table = 'board'; 			// 실제 DB 테이블 명
-	$target_idx_name = "board_idx"; 	// 데이터 PK 키 이름
-    $target_name = "게시판"; 				// API 명명 (로그 및 출력용)
-    
-    $type = "common";
-
-    /************************************************* 화면 노출 *************************************************/  
+    header("Location: {$PATH['HTTP_ROOT']}{$PREFIX['FRONT']}{$PREFIX['COMMON']}/page/board/common/list.php");
 
     require_once $PATH['SERVER_ROOT'] . $PREFIX['FRONT'] . $PREFIX['COMMON'] . "/layout/head.php";
-    // require_once $PATH['SERVER_ROOT'] . $PREFIX['FRONT'] . $PREFIX['COMMON'] . "/layout/header.php";
-    // require_once $PATH['SERVER_ROOT'] . "/head.php";
-    // require_once $PATH['SERVER_ROOT'] . "/header.php";
-
-    /************************************************* UTIL PHP *************************************************/
 ?>
+
 
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&amp;display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
-<div class='container' id='container-basic-list'>
-    <div class='middle-cont'>
-        <div class='board-title-area'>
-            <h2 class='ta-main-tit'>실적스토어</h2>
+<style>
+    .main-container {margin: 0 auto; padding-top:150px;}
+    .main-container .s-left { width:30%;}
+    .main-container .s-right { width:70%;}
+    .main-container .s-left .sl-top .sub-tit {font-family:'Montserrat', sans-serif; font-weight:500; font-size:0.75rem; color:#f6b518;}
+    .main-container .s-left .sl-top .main-tit {font-family: 'Noto Sans KR', sans-serif; font-weight:700; font-size:2.5rem;}
+
+    .swiper-slide a {width:100%; height:100%; display:inline-block;}
+    .sl-bottom a {width:115px; height:100%; display:inline-block;}
+
+    .section1 {width:100%; position:relative; }
+    .section1 .swiper-container {width:1440px; margin:25px auto 87px;}
+    .section1 .swiper-container .swiper-slide img {width:272px; height:391px;}
+    .section1 .swiper-container .swiper-slide .main-onfif-slide {margin-top:24px;}
+    .section1 .swiper-container .swiper-slide .main-onfif-slide .main-onfif-tit {font-family:'Noto Sans KR',sans-serif; font-weight:700; font-size:1.5rem; padding-bottom:12px; width:272px;}
+    .section1 .swiper-container .swiper-slide .main-onfif-slide .main-onfif-date {font-family:'Montserrat', sans-serif; font-size:1rem; }
+    .section1 .swiper-prev {background-image:url(<?=$PATH['RESOURCES']?>/image/icon/left-arrow.png); width:50px; height:50px; position:absolute; top:40%; left:6.25vw; z-index:1; cursor: pointer;}
+    .section1 .swiper-next {background-image:url(<?=$PATH['RESOURCES']?>/image/icon/right-arrow.png); width:50px; height:50px; position:absolute; top:40%; right:6.25vw; z-index:1; cursor: pointer;}
+
+    .section1 .swiper-container .swiper-slide[aria-label="4 / 5"] {pointer-events:none;}
+    .section1 .swiper-container .swiper-slide[aria-label="5 / 5"] {pointer-events:none;}
+
+
+    .section2 {width:100%; background:url(<?=$PATH['RESOURCES']?>/image/onfif/main-bg.jpeg); display:flex;}
+    .section2 .bg {width:100%; height:100%; padding:122px 0 86px; background:rgba(0,0,0,0.5); display:flex;}
+    .section2 .s2-wrap {width:1360px; margin:0 auto; display:flex; align-items:center;justify-content:space-between;}
+    .section2 .s-left .sl-top {margin-bottom:104px;}
+    .section2 .s-left .sl-top .main-tit {color:#fff;}
+    .section2 .s-right {display:flex;}
+    .section2 .s-right .s2-box {margin-right:30px; width:220px;}
+    .section2 .s-right .s2-box a {display:inline-block; width:100%;}
+    .section2 .s-right .s2-imgArea {width:220px; height:220px; overflow:hidden; position:relative;border-radius:15px;}
+    .section2 .s-right .s2-imgArea img {position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:100%; }
+    .section2 .s-right .s2-txtArea {color:#fff;font-family:'Noto Sans KR',sans-serif; font-size:1rem; font-weight:700; margin-top:14px; width: 100%;}
+
+    .section3 {width:1360px; padding:122px 0 128px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; background-color:#fff;}
+    .section3 .s-left .sl-top {margin-bottom:104px;}
+    .section3 .s-right .s3-notice {border-bottom:1px dashed #dbdbdb; padding-bottom:11px; padding-top:15px; }
+    .section3 .s-right .s3-notice .s3-notice-date {font-family:'Montserrat', sans-serif; font-size:1rem; color:#6f6f6f; margin-right:30px;}
+    .section3 .s-right .s3-notice .s3-notice-tit {font-family:'Noto Sans KR',sans-serif; font-size:1.125rem; font-weight:500;}
+
+    
+    .section3 .s-right .s3-notice a {display:flex; align-items:center;}
+    .section3 .s-right .s3-notice a .s3-notice-date {flex:.1;}
+    .section3 .s-right .s3-notice a .s3-notice-tit {flex:.9;}
+
+    
+
+    .section4 {width:100%; padding:95px 0 75px; background-color:#ffb518; display:flex; align-items:center;}
+    .section4 .s-left {padding-left:9.635vw; padding-right:9.6vw; width:unset;}
+    .section4 .s-left .sl-top {min-width:202px;}
+    .section4 .s-left .sl-top .main-tit {font-size:30px; font-weight:700;}
+    .section4 .s-left .sl-top .sub-tit {font-size:16px; font-weight:500; color:#000;font-family:'Noto Sans KR',sans-serif; margin:16px 0 52px;}
+
+    /* .section4 .swiper-container .swiper-slide {width:100% !important;} */
+    .section4 .swiper-container .swiper-slide .imgArea {height:200px; width:100%; overflow:hidden; position:relative;}
+    .section4 .swiper-container .swiper-slide .imgArea img {min-width:100%; height:100%; object-fit:cover; position:absolute; top:50%; left:50%;transform:translate(-50%,-50%);}
+    .section4 .swiper-container .swiper-slide .txtArea {padding:25px 10px; width:100%; background-color:#fff; display:flex; align-items:center; flex-direction:column; justify-content:center;}
+    .section4 .swiper-container .swiper-slide .txtArea .ta-movie-tit {font-family:'Noto Sans KR',sans-serif; text-align:center; font-weight:500; font-size:1.25rem;margin-bottom:4px; width:100%; padding:0 10px;}
+    .section4 .swiper-container .swiper-slide .txtArea .ta-movie-info {font-family:'Montserrat', sans-serif; font-size:1rem; color:#3c3c3c;}
+    .section4 .swiper-container .swiper-slide .txtArea .ta-movie-info span {padding-right:9px; }
+    .section4 .swiper-container .swiper-slide .txtArea .ta-movie-info span:first-child:before {content:none;}
+    .section4 .swiper-container .swiper-slide .txtArea .ta-movie-info span:before {content:""; height:11px; width:0.5px; background-color:#3c3c3c; display:inline-block;margin-right:9px;}
+
+    .section4 .sl-bottom {display:flex; justify-content:space-between;}
+    .section4 .sl-bottom .swiper-prev {background-image:url(<?=$PATH['RESOURCES']?>/image/icon/left-arrow.png); background-color:#fff; background-size:41px 41px; border-radius:50%; width:40px; height:40px; cursor: pointer; margin-right:4px;}
+    .section4 .sl-bottom .swiper-next {background-image:url(<?=$PATH['RESOURCES']?>/image/icon/right-arrow.png); background-color:#fff; background-size:41px 41px; border-radius:50%; width:40px; height:40px; cursor: pointer;}
+
+    .onfif-btn-more {padding:10px 20px; border:1px solid #d8d8d8; box-sizing:border-box; border-radius:50px; display:flex; align-items:center; justify-content:center; width:115px; height:40px; transition:all 0.25s ease-out;}
+    .onfif-btn-more .btn-more-txt {font-family:'Noto Sans KR', sans-serif; font-weight:600; font-size:0.875rem; color:#676767; padding-right:8px;}
+    .onfif-btn-more i {transition:all .25s ease-out; color:#353535;}
+    .onfif-btn-more:hover i {transform:translateX(4px); color:#fff;}
+    .onfif-btn-more.white:hover i {color:#000;}
+    .onfif-btn-more:hover {background-color:#353535; color:#fff;}
+    .onfif-btn-more:hover .btn-more-txt {color:#fff;}
+    .onfif-btn-more.white {border:1px solid #fff;}    
+    .onfif-btn-more.white i {color:#fff;}
+    .onfif-btn-more.white .btn-more-txt, .btn-more.white i {color:#fff;}
+    .onfif-btn-more.white:hover {background-color:#fff; color:#353535;}
+    .onfif-btn-more.white:hover .btn-more-txt, .btn-more.white:hover i {color:#353535;}
+
+    @media screen and (max-width: 768px) {
+
+        
+        .swiper-slide a {text-align:center;}
+        
+        .main-container {padding-top:70px;}
+        .section1 .swiper-container {margin:25px auto; padding:0 50px; width:100%;}
+        .section1 .swiper-container .swiper-slide .main-onfif-slide .main-onfif-tit {width:95%;}
+        .section1 .swiper-container .swiper-slide img { height:100%;}
+
+        /* 뉴스레터 */
+        .section2 {background-image:none;}
+        .section2 .bg {background:#fff; padding:40px 20px;}
+        .section2 .s2-wrap {width:100%; flex-direction:column;}
+        .main-container .s-left {width:100%; display:flex; align-items:center; justify-content:space-between; margin-bottom:40px;}
+        .section2 .s-left .sl-top {margin-bottom:0;}
+        .section2 .s-left .sl-top .main-tit {color:#000; font-size:2rem;}
+        .section2 .main-container .s-left .sl-top .sub-tit {display:none;}
+        .section2 .s-left .sl-bottom {}
+        .section2 .s-left .sl-bottom a .btn-more {border-color:#d8d8d8;}
+        .section2 .s-left .sl-bottom a .btn-more span, .section2 .s-left .sl-bottom a .btn-more i {color:#676767;}
+        .main-container .s-right {width:100%; display:block;}
+        .section2 .s-right .s2-box {display:inline-block; width:calc(100% / 2 - 9px); margin-right:14px;}
+        .section2 .s-right .s2-box:nth-child(2n) {margin-right:0;}
+        .section2 .s-right .s2-box:nth-child(2n)~.s2-box {margin-top:40px;}
+        .section2 .s-right .s2-box a {display:inline-block;}
+        .section2 .s-right .s2-box a .s2-imgArea {width:100%;}
+        .section2 .s-right .s2-imgArea {height:auto;}
+        .section2 .s-right .s2-imgArea img {position:relative; top:inherit; left:inherit; transform:inherit;}
+        .section2 .s-right .s2-txtArea {color:#000;}
+
+        /* 공지사항 */
+        .section3 {width:100%; padding:40px 20px 80px; flex-direction:column;}
+        .section3 .s-left .sl-top {margin-bottom:0;}
+        .section3 .s-left .sl-top .main-tit {font-size:2rem;}
+        .section3 .s-right .s3-notice {}
+        .section3 .s-right .s3-notice a {display:flex; flex-direction:column-reverse; align-items:flex-start;}
+        .section3 .s-right .s3-notice a .s3-notice-tit {width:100%;}
+        .section3 .s-right .s3-notice a .s3-notice-date {width:100%; font-size:.9rem; margin-right:0; margin-top:3px;}
+
+        /* 영화제 큐레이션 */
+        .section4 {padding:40px 20px; flex-direction:column;}
+        .section4 .s-left {padding-left:0; flex-direction:column; align-items:flex-start;}
+        .section4 .s-left .sl-top .sub-tit {margin:0; padding:10px 0 20px;}
+    }
+</style>
+
+<div class='main-container'>
+    <div class="section1">
+        <div class="swiper-container slider-pc">
+            <div class="swiper-wrapper" id='list-getListFestival'>
+            </div>
+        </div>
+        <div class="swiper-prev bg"></div>
+        <div class="swiper-next bg"></div>
+    </div>
+    <div class="section2">
+        <div class="bg">
+            <div class="s2-wrap">
+                <div class="s-left">
+                    <div class="sl-top">
+                        <p class="sub-tit">Newsletter</p>
+                        <h3 class="main-tit">뉴스레터</h3>
+                    </div>
+                    <div class="sl-bottom">
+                        <a href='<?=$PATH['HTTP_ROOT']?><?=$PREFIX['FRONT']?><?=$PREFIX['COMMON']?>/page/community/newsletter/list.php'>
+                            <div class="onfif-btn-more white">
+                                <span class="btn-more-txt">더 보기</span>
+                                <i class="xi-long-arrow-right"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="s-right" id='list-getListBoard1'>
+                </div>
+            </div>
+        </div>    
+    </div>
+    <div class="section3">
+        <div class="s-left">
+            <div class="sl-top">
+                <p class="sub-tit">Notice</p>
+                <h3 class="main-tit">공지사항</h3>
+            </div>
+            <div class="sl-bottom">
+                <a href='<?=$PATH['HTTP_ROOT']?><?=$PREFIX['FRONT']?><?=$PREFIX['COMMON']?>/page/community/notice/list.php'>
+                    <div class="onfif-btn-more">
+                        <span class="btn-more-txt">더 보기</span>
+                        <i class="xi-long-arrow-right"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="s-right">
+            <div class="s3-box" id='list-getListBoard2'>
+            </div>
+        </div>
+        
+    </div>
+    <div class="section4">
+        <div class="s-left">
+            <div class="sl-top">                
+                <h3 class="main-tit">영화제 큐레이션</h3>
+                <p class="sub-tit">서울국제대안영상페스티벌<br>프로그래머 추천 영화</p>
+            </div>
+            <div class="sl-bottom">
+                <div class="swiper-prev bg"></div>
+                <div class="swiper-next bg"></div>
+            </div>            
         </div>
 
-        <!-- 공지사항 목록 -->
-        <div class='list-table'>
-            <div class='table th'>
-                <p class='table-item item01'>번호</p>
-                <p class='table-item item02'>제목</p>
-                <p class='table-item item03'>작성자</p>
-                <p class='table-item item04'>등록일</p>
-                <!-- <p class='table-item item05'>추천
-                    <span class='data-filter sort-item' data-sort_key='like_count' data-event_type='click'>
-                        <i class='xi-caret-down'></i>
-                    </span>
-                </p> -->
-                <p class='table-item item06'>조회수</p>
-            </div>
-            
-            <div id='list-getList<?=$target_flag?>Notice'>
-            </div>
-            <div id='list-getList<?=$target_flag?>'>
-            </div>
-            <div id='no-getList<?=$target_flag?>'>
-                검색된 데이터가 없습니다.
-            </div>
-        </div> 
-
-        <div class='pagenation-cont item-data' data-api_name='getList<?=$target_flag?>'></div>
-
-        <div class='board-cate'>    
-            <!-- 검색 폼 -->
-            <div class='cont-search_board'>
-                <div class='tit-search'>
-                    <!-- <div class='tit-search-txt'>검색</div> -->
-                    <form class='filter-purpose form-search' data-event_type='submit' onsubmit='return false;'>
-                        <input class='event-search_keyword' type='text' data-search_key='search_keyword' placeholder='제목이나 작성자를 검색해주세요.'/>
-                        <button class='search-btn'>검색</button>
-                    </form>
+        <div class="s-right">
+            <div class="swiper-container slider-pc">
+                <div class="swiper-wrapper" id='list-getListMovieClassify'>
+                    
                 </div>
             </div>
         </div>
     </div>
+    <div id='canvas-popup'></div>
+    <style>
+        #canvas-popup{position:fixed; top:80px; left:120px;z-index:10000;}
+        #canvas-popup img{width:360px !important;/*border: 1px solid gainsboro;*/border-bottom:none;}
+        #canvas-popup div{cursor:pointer;font-size:11px;}
+
+        @media screen and (max-width: 768px) {
+            
+            #canvas-popup{position:fixed; top:10px; left:10px;right:10px;width:240px;}
+            #canvas-popup img{width:100% !important;}
+        }
+    </style>
 </div>
+
+<script>
+
+// 영화제 슬라이더
+function mainSlider(){
+    var mainSwiper = new Swiper('.section1 .swiper-container.slider-pc', {
+        slidesPerView: 5,
+        spaceBetween: 20,
+        loop: true,
+        navigation: {
+            nextEl: '.section1 .swiper-next',
+            prevEl: '.section1 .swiper-prev',
+        },
+        autoplay: {
+          delay: 2000,
+          disableOnInteraction: false,
+        },
+    });
+
+    //큐레이션 슬라이더
+    var movieSwiper = new Swiper('.section4 .swiper-container.slider-pc', {
+        slidesPerView: 4,
+        spaceBetween: 20,
+        slidesToScroll : 4, //스크롤 한번에 움직일 컨텐츠 개수
+        //loop: true,
+        navigation: {
+            nextEl: '.section4 .swiper-next',
+            prevEl: '.section4 .swiper-prev',
+        },
+        // breakpoints: { //반응형 조건 속성
+        // 768: {
+        //   slidesPerView: 4,
+        // },
+    });
+}
+
+function mobileFunction(){
+    var widthSize = $(window).width();
+    // var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ? true : false;
+
+    if(widthSize < 768){
+        $('.swiper-container').removeClass('slider-pc');
+        $('.swiper-container').addClass('slider-mo');
+        $('.section2').find('.onfif-btn-more').removeClass('white');
+
+        var mainSwiperM = new Swiper('.section1 .swiper-container.slider-mo', {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            loop: true,
+            navigation: {
+                nextEl: '.section1 .swiper-next',
+                prevEl: '.section1 .swiper-prev',
+            },
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+        });
+
+        var movieSwiperM = new Swiper('.section4 .swiper-container.slider-mo', {
+            slidesPerView: 1,
+            spaceBetween: 22,
+            // loop: true,
+            navigation: {
+                nextEl: '.section4 .swiper-next',
+                prevEl: '.section4 .swiper-prev',
+            },
+        });
+    }
+    else{
+        $('.swiper-container').addClass('slider-pc');
+        $('.swiper-container').removeClass('slider-mo');
+        $('.section2').find('.onfif-btn-more').addClass('white');
+    }
+
+}
+
+</script>
+
+
+
+
+
+
 
 
 
@@ -111,415 +344,87 @@
 
 
 <script>
-    /**************************************************** 전역 변수 *********************************************/
-    // 파라미터 값 중 0이 유효한 경우, isset 대신 (!== "") 처리
-    var g_req = {// 요청 파라미터
-        "getList<?=$target_flag?>Notice" : {//  목록 조회 파라미터
-            data_render_count           :   Number("<?=isset($params["getList{$target_flag}"]["data_render_count"]) ? $params["getList{$target_flag}"]["data_render_count"] : "20"?>"), // 데이터 렌더링 수
-            page_selected_idx           :   Number("<?=isset($params["getList{$target_flag}"]["page_selected_idx"]) ? $params["getList{$target_flag}"]["page_selected_idx"] : "1"?>"),  // 선택된 페이지 INDEX
-            page_render_count           :   Number("<?=isset($params["getList{$target_flag}"]["page_render_count"]) ? $params["getList{$target_flag}"]["page_render_count"] : "10"?>"),  // 페이지 시트 렌더링 수 INDEX
-            page_selected_sheet         :   Number("<?=isset($params["getList{$target_flag}"]["page_selected_sheet"]) ? $params["getList{$target_flag}"]["page_selected_sheet"] : "1"?>"),  // 선택된 페이지 시트 INDEX
-            total_data_count            :   0,
-            total_page_count            :   0,            
-            sort_list                   :   "<?=isset($params["getList{$target_flag}"]["sort_list"])         ? $params["getList{$target_flag}"]["sort_list"] : "notice_status desc, order_num desc, idx desc"?>",   // 정렬
+    function createPopup1()
+    {
+        var cookie_check = getCookie("popup_idx1");
 
-            type                        :   "<?=$type?>",
-            notice_status               :   1,
-        },
-        "getList<?=$target_flag?>" : {//  목록 조회 파라미터
-            data_render_count           :   Number("<?=isset($params["getList{$target_flag}"]["data_render_count"]) ? $params["getList{$target_flag}"]["data_render_count"] : "20"?>"), // 데이터 렌더링 수
-            page_selected_idx           :   Number("<?=isset($params["getList{$target_flag}"]["page_selected_idx"]) ? $params["getList{$target_flag}"]["page_selected_idx"] : "1"?>"),  // 선택된 페이지 INDEX
-            page_render_count           :   Number("<?=isset($params["getList{$target_flag}"]["page_render_count"]) ? $params["getList{$target_flag}"]["page_render_count"] : "10"?>"),  // 페이지 시트 렌더링 수 INDEX
-            page_selected_sheet         :   Number("<?=isset($params["getList{$target_flag}"]["page_selected_sheet"]) ? $params["getList{$target_flag}"]["page_selected_sheet"] : "1"?>"),  // 선택된 페이지 시트 INDEX
-            total_data_count            :   0,
-            total_page_count            :   0,            
-            sort_list                   :   "<?=isset($params["getList{$target_flag}"]["sort_list"])         ? $params["getList{$target_flag}"]["sort_list"] : "notice_status desc, order_num desc, idx desc"?>",   // 정렬
+        if(cookie_check === "disable"){
+            return;
+        }
 
-            type                        :   "<?=$type?>",
-            notice_status               :   0,
-            search_keyword              :   "<?=isset($params["getList{$target_flag}"]["search_keyword"])         ? $params["getList{$target_flag}"]["search_keyword"] : ""?>",   // 
-        },
-    };
-    /**************************************************** 전역 변수 끝 *********************************************/
+        $("#canvas-popup").append("\
+            <div class='item-data' style='width:100%; height:100%;'>\
+                <a href='#'>\
+                    <img src='<?=$PATH['RESOURCES']?>/image/popup/app_notice.jpg' style='width:100%; height:100%;border:1px solid #000;' alt=''>\
+                </a>\
+                <br/>\
+                <div style='display: flex; justify-content: space-between;background-color: black;color: #fff;padding: 6px 10px;'>\
+                    <div class='btn-delete2'>24시간 동안 다시보지 않기</div>\
+                    <div class='btn-delete1'>닫기</div>\
+                </div>\
+            </div>\
+        ")
+        
+        // 팝업 닫기
+        $("#canvas-popup").find('.btn-delete1').off('click').on('click', function(e){
+            var edata = getEventData(e, 'item-data');
+            edata['parent'].remove();
+            console.log(edata);
+        });
+        // 24시간 닫기
+        $("#canvas-popup").find('.btn-delete2').off('click').on('click', function(e){
+            
+            var edata = getEventData(e, 'popup-item.item-data');
+            setCookie('popup_idx1', 'disable', 24);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            var edata = getEventData(e, 'item-data');
+            edata['parent'].remove();
+        });
+    }
     /**************************************************** 초기화 *********************************************/
     $(function(){
-    /***** 페이지 공통 (데이터 불러오기) *****/
-        FITSOFT['REST_API']['getInit']({
-            func_list : [ 
-                "getList<?=$target_flag?>Notice", //  목록 조회 (2021.08.30 / By.Chungwon)
-            ],
-            complete : function(api_name)
-            {// 모든 비동기 함수 종료
+        createPopup1();
 
-                // 검색 이벤트 값과 파라미터 변수 값과 매핑 (2차원 구조로 변경 필요)
-                autoSetItem(g_req[api_name], "search_key");
+        sendAPI("/onfif/festival", "getListFestival", {}, function(res)
+        {// 영화제 목록 가져오기
+            $(res['data_list']).each(function(index, data){
+                add("getListFestival", { item : data });
+            });
 
-                var new_url = setParamsToUrl(document.location.pathname, { params : JSON.stringify(g_req) });
-                history.replaceState({ params : JSON.stringify(g_req) }, null, new_url);
-            },
+            mainSlider();
+            // 모바일일 때
+            mobileFunction();
+            $(window).resize(mobileFunction);
         });
-        
-    /***** 페이지 공통 (유틸리티 / INIT) *****/
-        searchDatepicker('#date-start_date, #date-end_date');
-        // 이벤트 연동
-        setEventBinding($("[data-method]"));
+        sendAPI("/common/board", "getListBoard", { data_render_count : 4, type_idx : 1, category_idx : 5 }, function(res)
+        {// 뉴스레터 목록 가져오기
+            $(res['data_list']).each(function(index, data){
+                add("getListBoard1", { item : data });
+            });
+        });
+        sendAPI("/common/board", "getListBoard", { data_render_count : 5, type_idx : 1, category_idx : 6 }, function(res)
+        {// 공지사항 목록 가져오기
+            $(res['data_list']).each(function(index, data){
+                add("getListBoard2", { item : data });
+            });
+        });
+        sendAPI("/onfif/movie", "getListMovieClassify", { data_render_count : 10, type : 1 }, function(res)
+        {// 추천 영화 목록 가져오기
+            $(res['data_list']).each(function(index, data){
+                add("getListMovieClassify", { item : data });
+            });
 
-
-
-
-
-
-
-
-
-
-    /***** 목록페이지 (검색) *****/
-        autoSetEvent(function(item)
-        {// 검색 변수에 이벤트 바인딩 (2차원 구조로 변경 필요)
-            var api_name = $(item).closest('.item-data').data('api_name');
-            api_name = empty(api_name) ? 'getList<?=$target_flag?>' : api_name;
-            
-            g_req[api_name][item.key] = item.value;
-            g_req[api_name]['page_selected_idx'] = 1;
-
-            // 변수 값 유지를 위해 URL 해시값 변경
-            changeHash(document.location.pathname, { params : JSON.stringify(g_req) });
-            // 데이터 호출
-            get(api_name, { is_init : true });
-
-        }, 'search_key');  
-
-
-
-
-
-
-
-
-
-
-
-    /***** 목록페이지 (정렬) *****/
-        // 정렬 값을 파라미터 변수 값과 매핑하기 (2차원 구조로 변경 필요)
-        autoSetSort(g_req['getList<?=$target_flag?>']['sort_list'], "sort_key");
-    });
-
-
-
-
-
-
-
-
-
-    
-    $(window).on('popstate', function(event) 
-    {// 해시태그가 바뀌는 경우
-        if(empty(event.originalEvent.state) === false)
-        {
-            g_req = JSON.parse(event.originalEvent.state.params);
-            get("getList<?=$target_flag?>", { is_init : true });
-        }
-    });
-    $(window).on("pageshow", function(event){
-        // event.originalEvent.persisted - BFCache로부터 복원된 경우 true (ex. 뒤로가기)
-        // if(event.originalEvent && (event.originalEvent.persisted || (window.performance && window.performance.navigation.type == 2)))
-        if(event.originalEvent && event.originalEvent.persisted)
-        {// BFCache로부터 복원된 경우 true (ex. 뒤로가기)
-            g_req = JSON.parse(event.originalEvent.state.params);
-            get("getList<?=$target_flag?>", { is_init : true });
-        }
+            mainSlider();
+            // 모바일일 때
+            mobileFunction();
+            $(window).resize(mobileFunction);
+        });
     });
     /**************************************************** 초기화 끝 *********************************************/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**************************************************** 정적 바인딩 이벤트 *********************************************/
-    function staticMethodHandler(e)
-    {// 정적 메소드 핸들러 (2021.05.29 / By.Chungwon)
-
-        // 이벤트 핸들러인 경우
-        var target = $(e.currentTarget);
-        var api_info = target.data();
-        var item = target.closest(".item-data");
-        var item_info = item.data();
-        var item_siblings = item.parent().find("[data-method=" + api_info['method'] + "]"); // 동일 선상의 형제 값
-
-        
-
-        if(false) {}
-
-        /********** 목록 페이지 - 동적 이벤트 **********/
-
-
-        
-        else if(api_info['method'] === "more")
-        {// 데이터 목록 더보기 클릭 (2021.07.06 / By.Chungwon)
-            
-            g_req['getList<?=$target_flag?>']['page_selected_idx']++;
-            get("getList<?=$target_flag?>", { is_init : false });
-        }
-
-
-
-
-
-
-
-
-
-
-        else if(api_info['method'] === "paging")
-        {// 페이징 (2021.07.28 / By.Chungwon)
-            var api_name = item_info['api_name'];
-
-            var flag = api_info['flag'];
-            var state = api_info['state'];
-
-            var page_selected_idx = 1;  // first 인 경우
-            var page_selected_sheet = 1;  // first 인 경우
-
-            var paging_options = g_req[api_name];
-
-            if(state === 'first'){
-                page_selected_idx = 1;
-
-            }else if(state === 'prev'){
-                page_selected_idx = Number(paging_options.page_selected_idx) - 1;
-
-            }else if(state === 'next'){
-                page_selected_idx = Number(paging_options.page_selected_idx) + 1;
-
-            }else if(state === 'end'){
-                page_selected_idx = Number(paging_options.total_page_count);
-            }
-
-            if(flag === 'btn'){
-                if(page_selected_idx === 0 || page_selected_idx > paging_options.total_page_count){
-                    return 0;
-                }
-                    
-                // 버튼으로 페이지 이동 시에만
-                if(state === 'prev' && page_selected_idx % paging_options.page_render_count === 0){
-                    // 이전 버튼
-                    paging_options.page_selected_sheet = Number(paging_options.page_selected_sheet) - 1;
-                }else if(state === 'next' && paging_options.page_selected_idx % paging_options.page_render_count === 0){
-                    // 다음 버튼
-                    paging_options.page_selected_sheet = Number(paging_options.page_selected_sheet) + 1;
-                }else if(state === 'first'){
-                    // 처음으로
-                    paging_options.page_selected_sheet = 1;
-                }else if(state === 'end'){
-                    // 마지막으로
-                    paging_options.page_selected_sheet = Math.ceil(Number(paging_options.total_page_count) / Number(paging_options.page_render_count));
-                }
-            }else if(flag === 'index'){
-                page_selected_idx = state;
-            }  
-
-            if(page_selected_idx === paging_options.page_selected_idx)
-            {// 현재 페이지와 같은 경우 이동안함
-                return;
-            }
-
-            g_req[api_name]['page_selected_sheet'] = paging_options.page_selected_sheet;
-            g_req[api_name]['page_selected_sheet'] = paging_options.page_selected_sheet;
-            g_req[api_name]['page_selected_idx'] = page_selected_idx;
-
-            changeHash(document.location.pathname, { params : JSON.stringify(g_req) });
-
-            var $canvas = $("#list-" + api_name);
-            $canvas.html("");
-
-            get(api_name, { });
-        }
-    
-        
-
-        
-        /********** 목록 페이지 - 동적 이벤트 끝 **********/
-    }
-    // function MessageCreate(){
-    //     $('#container-basic-list .send-mail').click(function(){
-    //         $('.message-wrap').addClass('active');
-    //     });
-
-    //     $('.message-wrap .cancel-btn').click(function(){
-    //         $('.message-wrap').removeClass('active');
-    //     });
-    // }
-    /**************************************************** 정적 바인딩 이벤트 끝 *********************************************/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**************************************************** GET 메소드 *********************************************/
-    function get(api_name, opt)
-    {
-        var api_type = "getList";
-        var is_init = empty(opt) || empty(opt['is_init']) ? false : opt['is_init'];
-        var api_url = empty(opt) || empty(opt['api_url']) ? "<?=$api_url?>" : opt['api_url'];
-        var params = empty(opt) || empty(opt['params']) ? g_req[api_name] : opt['params'];
-
-        FITSOFT['REST_API'][api_type]({ 
-            api_url : api_url,
-            api_name : api_name,
-            is_init : is_init,
-            params : params,
-
-            callback : function(res)
-            {// 리스트 API 콜백
-
-                // 비동기 함수 동기화 처리
-                if(empty(opt) === false && empty(opt['init']) === false){ opt['init']({ api_name : api_name}); }
-                
-                if(api_name === "getList<?=$target_flag?>Notice")
-                {// 공지사항 불러온 후, 일반 게시글 호출하기
-                    g_req["getList<?=$target_flag?>"]['data_render_count'] -= res['data_list'].length;
-
-                    get("getList<?=$target_flag?>", { });
-                }
-                if(api_name === "getList<?=$target_flag?>")
-                {// 페이징 처리
-                    
-                    g_req[api_name]['total_data_count'] = Number(res['data_count']);
-                    g_req[api_name]['total_page_count'] = res['data_count'] === 0 ? 1 : Math.ceil(Number(res['data_count']) / Number(g_req[api_name]['data_render_count']));
-                    
-                    ajaxSend("<?=$PATH['HTTP_ROOT']?><?=$PREFIX['FRONT']?>/util/pagenation2.php", "get", { pagingOptions : JSON.stringify(g_req[api_name]) }, function(r2){
-                        $(".pagenation-cont").html(r2);
-
-                        setEventBinding($(".pagenation-cont").find("[data-method]"));                
-                    });
-                }
-
-                for(var i = 0; i < res['data_list'].length; i++){
-                    res['data_list'][i]['index'] = i;
-
-                    add(api_name, { 
-                        item : res['data_list'][i], 
-                        is_end : res['data_list'].length === (i+1) ,
-                    });
-                }
-            }
-        });
-    }
-    /**************************************************** GET 메소드 끝 ******************************************/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**************************************************** 셋팅 ******************************************/
     function add(api_name, res)
-    {// 데이터 추가 메소드 (2021.06.18 / By.Chungwon)
+    {// 데이터 추가 메소드
 
         /******************** 변수세팅 ********************/
         var item = res['item'];
@@ -527,122 +432,111 @@
         var attach = empty(res['attach']) ? 'append' : res['attach'];
         var $canvas = empty(res['canvas']) ? $("#list-" + api_name) : res['canvas'];
         /******************** 변수세팅 끝 ********************/
-
-
-
-
-
-        /******************** 액션별 분기처리 *******************/
-        if(false) {}
-        else
-        {// 그 외 액션
-            var html = create(api_name, item);
-            $canvas[attach](html);
-        }
-        /******************** 액션별 분기처리 끝 *******************/
-
-
-
-
-
-        /******************** 동적 이벤트 바인딩 *******************/
-        if(is_end){
-
-            // 이벤트 자동 연동
-            setEventBinding($canvas.find("[data-method]"));                
-        }
-        /******************** 동적 이벤트 바인딩 끝 *******************/
+        
+        var html = create(api_name, item);
+        $canvas[attach](html);
     }
     /**************************************************** 셋팅 끝 ******************************************/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
     /**************************************************** HTML 생성 *********************************************/    
     function create(api_name, data)
-    {//  HTML 생성 (2021.07.29 / By.Chungwon) - 수신값은 전부 문자열
+    {// HTML 생성 - 수신값은 전부 문자열
         data['api_name'] = api_name;
 
         if(false){}
 
-        else if(api_name === "getList<?=$target_flag?>" || api_name === "getList<?=$target_flag?>Notice")
-        {//  HTML 생성 (2021.07.06 / By.Chungwon)
+        else if(api_name === "getListFestival")
+        {// 영화제 목록 조회 (2021.07.27 / By.Chungwon)
+
+            // [날짜] - 시/분/초 짜르기
+            data['open_date'] = empty(data['open_date']) ? "" : data['open_date'].split(" ")[0];
+            data['close_date'] = empty(data['close_date']) ? "" : data['close_date'].split(" ")[0];
+
+            return StringFormat("\
+                <div class='swiper-slide' {0}>\
+                    <a href='<?=$PATH['HTTP_ROOT']?><?=$PREFIX['FRONT']?><?=$PREFIX['COMMON']?>/page/festival/main.php?festival_idx={1}'>\
+                        <img src='{2}' alt='slide1'>\
+                        <div class='main-onfif-slide'>\
+                            <p class='main-onfif-tit keepText'>{3}</p>\
+                            <span class='main-onfif-date'>{4} ~ {5}</span>\
+                        </div>\
+                    </a> \
+                </div>\
+            "
+            ,   getlistToDataStr(['idx'], data)
+            ,   data['idx']
+            ,   FITSOFT['IMAGE']['setLink'](data['thumbnail_col'])
+            ,   data['name']
+            ,   data['open_date']
+            ,   data['close_date']
+            );
+        }
+        else if(api_name === "getListBoard1")
+        {// 뉴스레터 목록 조회 (2021.07.27 / By.Chungwon)
+            return StringFormat("\
+                <div class='s2-box' {0}>\
+                    <a href='<?=$PATH['HTTP_ROOT']?><?=$PREFIX['FRONT']?><?=$PREFIX['COMMON']?>/page/community/newsletter/detail.php?board_idx={1}'>\
+                        <div class='s2-imgArea'><img src='{2}' alt='onpeople'></div>\
+                        <div class='s2-txtArea multi-line2'>{3}</div>\
+                    </a>\
+                </div>\
+            "
+            ,   getlistToDataStr(['idx'], data)
+            ,   data['idx']
+            ,   FITSOFT['IMAGE']['setLink'](data['thumbnail'])
+            ,   data['title']
+            );
+        }
+        else if(api_name === "getListBoard2")
+        {// 공지사항 목록 조회 (2021.07.27 / By.Chungwon)
 
             // [날짜] - 시/분/초 짜르기
             data['insert_date'] = empty(data['insert_date']) ? "" : data['insert_date'].split(" ")[0];
 
-            data['str_is_image'] = data['is_image'] == "0" ? "" : "<img src='<?=$PATH['RESOURCES']?>/image/icon/list-img.png' alt='img-icon'>";
-            data['str_is_notice'] = data['notice_status'] == "0" ? "" : "notice";
-            data['is_mine'] = data['reg_user_idx'] == <?=isset($_SESSION['login_user']) ? $_SESSION['login_user']['idx'] : 0?> ? "" : "mine-off";
-
-            // 페이징 넘버링 알고리즘 (2021.09.10 / By.Chungwon)
-            var remain_page = (Number(g_req[api_name]['total_page_count']) - Number(g_req[api_name]['page_selected_idx'])) + 1; // 전체 페이지 - 현재 페이지 = 남은 페이지
-            var start_index = remain_page * Number(g_req[api_name]['data_render_count']); // 남은 페이지 * 데이터 렌더링 수 =
-            var remain_index = (Number(g_req[api_name]['data_render_count'])) * Number(g_req[api_name]['page_selected_idx'] - 1);;
-            remain_index = Number(g_req[api_name]['total_data_count']) - remain_index;
-            data['page_index'] = start_index - (start_index - remain_index) - data['index'];
-
-            //공지일때 idx 공지로 표시 (2021.09.09 / Jieun)
-            data['str_notice_status'] = data['notice_status'] == '0' ? data['page_index'] : '공지';
-            data['reg_user_nickname'] = data['reg_user_nickname'] == '' ? '-' : data['reg_user_nickname'];
-
             return StringFormat("\
-                <div class='table td item-data {10} {9}' {0}>\
-                    <p class='table-item item01'>{11}</p>\
-                    <p class='table-item item02'>\
-                        <a class='keepText' href='<?=$PATH['HTTP_ROOT']?><?=$PREFIX['FRONT']?><?=$PREFIX['COMMON']?>/page/board/<?=$type?>/detail.php?board_idx={1}'>\
-                            {2}\
-                        </a>\
-                        <span class='table-add-img'>{3}</span>\
-                    </p>\
-                    <p class='table-item item03'>\
-                        <span>{4}</span>\
-                    </p>\
-                    <p class='table-item item04'>{5}</p>\
-                    <p class='table-item item06'>{7}</p>\
+                <div class='s3-notice' {0}>\
+                    <a href='<?=$PATH['HTTP_ROOT']?><?=$PREFIX['FRONT']?><?=$PREFIX['COMMON']?>/page/community/notice/detail.php?board_idx={1}'>\
+                        <span class='s3-notice-date'>{3}</span>\
+                        <span class='s3-notice-tit keepText'>{2}</span>\
+                    </a>\
                 </div>\
             "
-            ,   getlistToDataStr(['idx', 'reg_user_nickname', 'reg_user_idx', 'reply_user_name'], data)
+            ,   getlistToDataStr(['idx'], data)
             ,   data['idx']
             ,   data['title']
-            ,   data['str_is_image']
-            ,   data['reg_user_nickname']
             ,   data['insert_date']
-            ,   data['like_count']
-            ,   data['hit']
-            ,   data['reply_count']
-            ,   data['str_is_notice']
-            ,   data['is_mine']            
-            ,   data['str_notice_status']
             );
         }
-    }
+        else if(api_name === "getListMovieClassify")
+        {// 추천영화 목록 조회 (2021.07.27 / By.Chungwon)
 
-    /**************************************************** HTML 생성 끝 *********************************************/
+            // [날짜] - 시/분/초 짜르기
+            data['insert_date'] = empty(data['insert_date']) ? "" : data['insert_date'].split(" ")[0];
+
+            return StringFormat("\
+                <div class='swiper-slide'>\
+                    <div class='swiper-box'>\
+                        <a href='<?=$PATH['HTTP_ROOT']?><?=$PREFIX['FRONT']?><?=$PREFIX['COMMON']?>/page/movie/detail.php?movie_idx={1}'>\
+                            <div class='imgArea'><img src='{2}' alt='movie'></div>\
+                            <div class='txtArea'>\
+                                <p class='ta-movie-tit keepText'>{3}</p>\
+                                <p class='ta-movie-info'><span class='tmi-dir'>{4}</span><span class='tmi-year'>{5}</span><span class='tmi-time'>{6}</span></p>\
+                            </div>\
+                        </a> \
+                    </div>\
+                </div>\
+            "
+            ,   getlistToDataStr(['idx'], data)
+            ,   data['idx']
+            ,   FITSOFT['IMAGE']['setLink'](data['thumbnail'])
+            ,   data['name']
+            ,   data['director_name']
+            ,   data['release_year']
+            ,   data['running_time']
+            );
+        }
+        
+    }
+    /**************************************************** HTML 생성 끝 *********************************************/    
+
 </script>

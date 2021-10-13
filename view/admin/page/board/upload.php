@@ -195,6 +195,7 @@
             ref_table                   :   "<?=$target_table?>",
         },
     };
+    var g_file_list = []; // 파일이 리스트로 뿌려지는 경우, key 삽입하기
     var g_res = {}; // 수신 파라미터
     var g_multi_list = {}; // 참조하는 데이터
     var g_image_list = {// 이미지 컨테이너
@@ -365,7 +366,9 @@
                 {// 등록된 이미지 반복
                     var image = image_list[i];
 
-                    if(image['ref_key'] === 'te')
+                    // if(image['ref_key'] === 'te')
+                    if(g_file_list.indexOf(image['ref_key']) !== -1)
+
                     {//  (다중 이미지 객체) 썸네일, 설치 파일
                         
                         var $canvas = $("[data-image_canvas='" + image['ref_key'] + "']");
@@ -377,7 +380,26 @@
                             canvas : $canvas
                         }
                     }
-                    else if(image['ref_key'] === 'thumbnail' || image['ref_key'] === 'thumbnail_col')
+                    // else if(image['ref_key'] === 'thumbnail' || image['ref_key'] === 'thumbnail_col')
+                    // {// (단일 이미지 객체) 썸네일
+                    //     // file 객체
+                    //     var $file = $(".image-bg_cont [data-file_key='" + image['ref_key'] + "']");
+
+                    //     // file 객체의 컨테이너
+                    //     var $file_parent = $file.closest(".image-bg_cont");
+                    //     // 캔버스 (버튼)
+                    //     var $canvas = $file_parent.find('.image-bg_set_btn');
+                    //     // 이미지 경로
+                    //     var path = FITSOFT['IMAGE']['setLink'](image['path']);
+                    //     // 백그라운드 설정
+                    //     $canvas.css('background-image', "url('" + path + "')");
+                    //     // data 매핑
+                    //     $file_parent.data('idx', image['idx']);
+                    //     $file_parent.data('ref_key', image['ref_key']);
+                    //     // 디자인은 위해 active 처리                        
+                    //     $file_parent.addClass('active');
+                    // }
+                    else if(g_file_list.indexOf(image['ref_key']) === -1)
                     {// (단일 이미지 객체) 썸네일
                         // file 객체
                         var $file = $(".image-bg_cont [data-file_key='" + image['ref_key'] + "']");
@@ -388,8 +410,17 @@
                         var $canvas = $file_parent.find('.image-bg_set_btn');
                         // 이미지 경로
                         var path = FITSOFT['IMAGE']['setLink'](image['path']);
-                        // 백그라운드 설정
-                        $canvas.css('background-image', "url('" + path + "')");
+                        // 백그라운드 및 이미지
+                        var tag_name = $canvas.prop('tagName').toLowerCase();
+
+                        if(tag_name === "img")
+                        {// 이미지인 경우
+                            $canvas.attr('src', path);
+                        }else
+                        {// 그 외
+                            $canvas.css('background-image', "url('" + path + "')");
+                        }
+                        
                         // data 매핑
                         $file_parent.data('idx', image['idx']);
                         $file_parent.data('ref_key', image['ref_key']);
@@ -480,7 +511,6 @@
             /*************************** 데이터 파싱 ***************************/ 
             // params.delete('budget');
             // params.append('budget', deleteComa(glist['budget']));
-
             sendAPI("<?=$api_url?>", "upload<?=$target_flag?>", params, function(res){
                 if(res.target_idx){
 
