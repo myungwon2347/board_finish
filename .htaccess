@@ -1,0 +1,36 @@
+php_value error_reporting 22527
+php_flag display_errors on
+
+php_value upload_max_filesize 64M
+php_value post_max_size 64M
+php_value max_execution_time 300
+php_value max_input_time 300
+
+
+RewriteEngine On
+#RewriteCond %{HTTPS} on
+#RewriteRule ^(.*)$ http://%{HTTP_HOST}/$1 [R,L]
+
+Options -MultiViews
+
+#--- ca로 접근 시, 집계페이지로 이동
+RewriteCond %{REQUEST_URI} ^/ca
+RewriteRule ^ca page/ca.php
+
+
+RewriteCond %{REQUEST_URI} ^/company
+RewriteRule ^company view/company/index.php
+
+SetEnvIf GEOIP_COUNTRY_CODE KR BlockCountry
+SetEnvIf GEOIP_COUNTRY_CODE US BlockCountry
+Deny from env=BlockCountry 
+Allow from env=AllowCountry 
+#SETEnvIf Remote_Addr 000.000.000.000 AllowCountry
+#www.iegate.net/country_code.php
+
+
+RewriteCond %{REQUEST_URI} ^/admin
+RewriteRule ^admin(.*) view/admin$1
+
+#RewriteCond %{REQUEST_URI} ^/developer/mypage
+#RewriteRule ^developer/mypage view/developer/page/mypage.php

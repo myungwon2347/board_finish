@@ -315,10 +315,6 @@
 
             autoSetItem(g_res[api_name], "<?=$page_type?>_key"); // 세팅 값
 
-            
-            // 게시물 수정 버튼
-            var is_mine = item['reg_user_idx'] === "<?=$_SESSION['login_user']['idx']?>" ? "" : "disabled";
-            $(".detail-status").addClass(is_mine);
         }
 
 
