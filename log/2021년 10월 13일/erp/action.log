@@ -1,55 +1,36 @@
-[2021-10-13 17:46:09] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+[2021-10-13 19:06:54] ["/api/admin/member.php"] [login] [::1] [관리자(1074)]
 
-			UPDATE `board` SET
-				hit = hit + 1 
-			WHERE
-				idx = 106
-				
-				
-		
-
-[2021-10-13 17:46:11] ["/api/admin/board.php"] [uploadBoard] [::1] [관리자(1074)]
-
-UPDATE `board` SET
-	`type` = 'common'
-	,	`notice_status` = 0
-	,	`view_status` = 1
+UPDATE `member` SET
+	`latest_login_date` = NOW()
 	,	update_date = NOW()
 WHERE
-	idx = 106
+	idx = 1074
 	
 
-[2021-10-13 17:46:17] ["/api/admin/board.php"] [uploadBoard] [::1] [관리자(1074)]
+[2021-10-13 19:08:33] ["/api/admin/member.php"] [login] [::1] [관리자(1074)]
 
-UPDATE `board` SET
-	`type` = 'common'
-	,	`notice_status` = 0
-	,	`view_status` = 1
+UPDATE `member` SET
+	`latest_login_date` = NOW()
 	,	update_date = NOW()
 WHERE
-	idx = 106
+	idx = 1074
 	
 
-[2021-10-13 17:46:23] ["/api/admin/board.php"] [uploadBoard] [::1] [관리자(1074)]
+[2021-10-13 19:09:00] ["/api/admin/member.php"] [login] [::1] [관리자(1074)]
 
-UPDATE `board` SET
-	`type` = 'common'
-	,	`title` = '사이트 오픈 축하드립니다'
-	,	`content` = '^^'
-	,	`notice_status` = 0
-	,	`view_status` = 1
+UPDATE `member` SET
+	`latest_login_date` = NOW()
 	,	update_date = NOW()
 WHERE
-	idx = 106
+	idx = 1074
 	
 
-[2021-10-13 17:46:29] ["/api/board.php"] [getBoard] [::1] [관리자(1074)]
+[2021-10-13 19:13:08] ["/api/admin/member.php"] [login] [::1] [관리자(1074)]
 
-			UPDATE `board` SET
-				hit = hit + 1 
-			WHERE
-				idx = 106
-				
-				
-		
+UPDATE `member` SET
+	`latest_login_date` = NOW()
+	,	update_date = NOW()
+WHERE
+	idx = 1074
+	
 

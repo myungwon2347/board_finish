@@ -2,7 +2,7 @@
     require_once $_SERVER['DOCUMENT_ROOT'] . '/config.php'; 
     use util\Log;
 
-    header("Location:" . $PATH['HTTP_ROOT'] . $PREFIX['FRONT'] . $PREFIX['ADMIN'] . "/page/member/list.php");   
+    header("Location:" . $PATH['HTTP_ROOT'] . $PREFIX['FRONT'] . $PREFIX['ADMIN'] . "/page/board/list.php");   
 
     require_once $PATH['SERVER_ROOT'] . $PREFIX['FRONT'] . $PREFIX['ADMIN'] . "/layout/head.php";
     require_once $PATH['SERVER_ROOT'] . $PREFIX['FRONT'] . $PREFIX['ADMIN'] . "/layout/sidebar.php";
